@@ -14,9 +14,9 @@
             android:icon="@android:drawable/ic_menu_slideshow"
             android:title="Slideshow" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_billed"
             android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="課金" />
     </group>
 
 </menu>

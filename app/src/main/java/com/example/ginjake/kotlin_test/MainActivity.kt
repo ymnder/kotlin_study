@@ -132,7 +132,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_slideshow -> {
             }
-            R.id.nav_manage -> {
+            R.id.nav_billed -> {
+                // 変更したいレイアウトを取得する
+                val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout
+                // レイアウトのビューをすべて削除する
+                layout.removeAllViews();
+                // レイアウトをR.layout.sampleに変更する
+                getLayoutInflater().inflate(R.layout.activity_billed, layout);
+                drawer.closeDrawers();
             }
         }
         return true

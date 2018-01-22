@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/billed_text"
+    android:layout_width="274dp"
+    android:layout_height="216dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="56dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:maxLines="2"
+    android:textColor="@android:color/black"
+    android:textSize="18sp"
+    android:text="プレイヤーがじゃぶじゃぶ課金したくなるような射幸心を煽りまくる説明文章"/>
+
+
+
