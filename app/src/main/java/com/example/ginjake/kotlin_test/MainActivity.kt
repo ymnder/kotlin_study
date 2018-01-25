@@ -1,5 +1,6 @@
 package com.example.ginjake.kotlin_test
 
+import android.app.PendingIntent.getActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
@@ -21,7 +22,6 @@ import com.example.ginjake.kotlin_test.model.User
 import com.example.ginjake.kotlin_test.view.ArticleView
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
-import com.trello.rxlifecycle.kotlin.bindToLifecycle
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -29,16 +29,25 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import android.support.annotation.NonNull
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
 import android.widget.LinearLayout
-import com.example.ginjake.kotlin_test.R.layout.activity_sub
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    var cardCount = 0
 
+    private val mRecyclerView: RecyclerView? = null
+    private var mAdapter: ArticleListAdapter? = null
+
+    private val mLayoutManager: RecyclerView.LayoutManager by lazy{
+        LinearLayoutManager(this)
+    }
+
+    //左メニュー
     private val drawer: DrawerLayout by lazy{
         findViewById<View>(R.id.drawer_layout) as DrawerLayout
     }
@@ -46,7 +55,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /* メニュー 闇の魔術で動いてる*/
+        /* メニュー*/
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         //setSupportActionBar(toolbar)
 
@@ -79,15 +88,56 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //ArticleViewオブジェクトを生成
         val articleView = ArticleView(applicationContext)
 
+        //val listAdapter = ArticleListAdapter(applicationContext)
+        //listAdapter.articles = listOf(dummyArticle("Kotlin入門","太郎"),dummyArticle("Java入門","じろう"))
+        //Articleオブジェクトを生成して、AirticleViewオブジェクトにセット
+
+
+        val mRecyclerView : RecyclerView = findViewById(R.id.list_view)
+        // use a linear layout manager
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        //mRecyclerView.setAdapter(listAdapter)
+
+
+
         val listAdapter = ArticleListAdapter(applicationContext)
         listAdapter.articles = listOf(dummyArticle("Kotlin入門","太郎"),dummyArticle("Java入門","じろう"))
-        //Articleオブジェクトを生成して、AirticleViewオブジェクトにセット
-        val listView: ListView = findViewById(R.id.list_view)
-        listView.adapter = listAdapter
+        mRecyclerView.setAdapter(listAdapter)
+
+        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+            // どのような動きを許可するか
+            // ViewHolder ごとに分ける等の場合はここで制御する
+            override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
+                return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+            }
+            // ここで指定した方向にのみドラッグ可能
+
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+
+
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                // スワイプで削除する場合はここ
+                val swipedPosition = viewHolder.getAdapterPosition()
+                //((mAdapter) mRecyclerView.getAdapter()).delete(viewHolder.getAdapterPosition());
+                val adapter =  mRecyclerView.getAdapter()
+                //adapter.remove(swipedPosition);
+            }
+        })
+        mRecyclerView.setHasFixedSize(true)
+        touchHelper.attachToRecyclerView(mRecyclerView)
+        mRecyclerView.addItemDecoration(touchHelper)
+        // ここを忘れると動かないので注意
+
+
+        /*
         listView.setOnItemClickListener { adapterView, view, position, id ->
             val article = listAdapter.articles[position]
             ArticleActivity.intent(this, article).let { startActivity(it) }
-        }
+        }*/
 
         val gson = GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -101,6 +151,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val queryEditText: EditText = findViewById(R.id.query_edit_text)
         val searchButton: Button = findViewById(R.id.search_button)
+        /*
         searchButton.setOnClickListener {
 
             articleClient.search(queryEditText.text.toString())
@@ -115,6 +166,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         toast("エラー: $it")
                     })
         }
+        */
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -122,27 +174,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_version -> {
             }
             R.id.nav_gallery -> {
-                // 変更したいレイアウトを取得する
-                val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout
-                // レイアウトのビューをすべて削除する
-                layout.removeAllViews();
-                // レイアウトをR.layout.sampleに変更する
-                getLayoutInflater().inflate(R.layout.activity_sub, layout);
-                drawer.closeDrawers();
+                change_view(R.layout.activity_sub)
             }
             R.id.nav_slideshow -> {
             }
             R.id.nav_billed -> {
-                // 変更したいレイアウトを取得する
-                val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout
-                // レイアウトのビューをすべて削除する
-                layout.removeAllViews();
-                // レイアウトをR.layout.sampleに変更する
-                getLayoutInflater().inflate(R.layout.activity_billed, layout);
-                drawer.closeDrawers();
+                change_view(R.layout.activity_billed)
             }
         }
         return true
+    }
+
+    fun change_view(activity_name: Int){
+        // 変更したいレイアウトを取得する
+        val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout
+        // レイアウトのビューをすべて削除する
+        layout.removeAllViews();
+        // レイアウトをR.layout.sampleに変更する
+        getLayoutInflater().inflate(activity_name, layout);
+        drawer.closeDrawers();
     }
     override fun onBackPressed() {
         val drawer: DrawerLayout = findViewById(R.id.drawer_layout)

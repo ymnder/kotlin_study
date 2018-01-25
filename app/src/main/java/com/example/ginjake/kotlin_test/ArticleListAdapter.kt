@@ -4,23 +4,55 @@ package com.example.ginjake.kotlin_test
  * Created by ginjake on 2018/01/19.
  */
 import android.content.Context
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.example.ginjake.kotlin_test.model.Article
 import com.example.ginjake.kotlin_test.view.ArticleView
+import java.nio.file.Files.size
+import android.view.LayoutInflater
+import android.widget.TextView
 
-class ArticleListAdapter (private val context: Context) : BaseAdapter() {
-        var articles: List<Article> = emptyList()
+class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<ArticleListAdapter.ViewHolder>()  {
 
-        override fun getCount(): Int = articles.size
-        override fun getItem(position : Int): Any? = articles[position]
-        override fun getItemId(position :Int) : Long = 0
-        override fun getView(position: Int,
-                             convertView:View?,
-                            parent: ViewGroup?): View =
-                ((convertView as? ArticleView) ?: ArticleView(context)).apply {
-                    setArticle(articles[position])
-                }
 
+    var articles: List<Article> = emptyList()
+
+class ViewHolder(itemView: ArticleView): RecyclerView.ViewHolder(itemView) {
+    var set_article_item: ArticleView? = itemView
+}
+
+override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+
+
+    val v:ArticleView = ArticleView(context)
+
+    val vh: ViewHolder = ViewHolder(v)
+    return vh
+}
+
+override fun onBindViewHolder(holder: ViewHolder?, position: Int): Unit {
+    holder?.set_article_item?.setArticle(articles[position])
+}
+
+override fun getItemCount(): Int = articles.size
+
+
+    fun getCount(): Int = articles.size
+    fun getItem(position : Int): Any? = articles[position]
+    override fun getItemId(position :Int) : Long = 0
+    fun getView(position: Int,
+                convertView:View?,
+                parent: ViewGroup?): View =
+            ((convertView as? ArticleView) ?: ArticleView(context)).apply {
+                setArticle(articles[position])
+            }
+
+    fun remove(position: Int) {
+
+        // mStudentList.removeAt(position)
+        //notifyItemRemoved(position)
+    }
 }
