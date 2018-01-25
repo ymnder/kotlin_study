@@ -102,29 +102,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         val listAdapter = ArticleListAdapter(applicationContext)
-        listAdapter.articles = listOf(dummyArticle("Kotlin入門","太郎"),dummyArticle("Java入門","じろう"))
+        listAdapter.articles = mutableListOf(dummyArticle("Kotlin入門","1st"),dummyArticle("Java入門","2nd"),dummyArticle("Java入門","3rd"),dummyArticle("Java入門","4th"))
         mRecyclerView.setAdapter(listAdapter)
 
-        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
-            // どのような動きを許可するか
-            // ViewHolder ごとに分ける等の場合はここで制御する
-            override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
-                return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
-            }
+        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN
+                        or ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT, ItemTouchHelper.UP or ItemTouchHelper.DOWN
+                or ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
             // ここで指定した方向にのみドラッグ可能
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                
+                val from = viewHolder.adapterPosition
+                val to = target.adapterPosition
 
 
-                return false
+                listAdapter.notifyItemMoved(from, to)
+
+                return true
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // スワイプで削除する場合はここ
                 val swipedPosition = viewHolder.getAdapterPosition()
-                //((mAdapter) mRecyclerView.getAdapter()).delete(viewHolder.getAdapterPosition());
-                val adapter =  mRecyclerView.getAdapter()
-                //adapter.remove(swipedPosition);
+                listAdapter.articles.removeAt(swipedPosition);
+                listAdapter.notifyItemRemoved(swipedPosition);
             }
         })
         mRecyclerView.setHasFixedSize(true)

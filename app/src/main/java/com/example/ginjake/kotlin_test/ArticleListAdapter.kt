@@ -18,7 +18,7 @@ import android.widget.TextView
 class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<ArticleListAdapter.ViewHolder>()  {
 
 
-    var articles: List<Article> = emptyList()
+    var articles: MutableList<Article> = arrayListOf()//emptyList()
 
 class ViewHolder(itemView: ArticleView): RecyclerView.ViewHolder(itemView) {
     var set_article_item: ArticleView? = itemView
