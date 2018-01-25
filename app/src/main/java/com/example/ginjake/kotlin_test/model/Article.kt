@@ -5,7 +5,7 @@ import com.example.ginjake.kotlin_test.model.User
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Article(val id: String,
+open class Article(val id: String,
                    val title: String,
                    val url: String,
                    val user: User) : Parcelable {

@@ -33,15 +33,21 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.system.Os.read
 import android.view.View
 import android.widget.LinearLayout
-
+import io.realm.Realm
+import io.realm.RealmConfiguration
+import java.util.*
+import com.example.ginjake.kotlin_test.model.Book
+import io.realm.RealmResults
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
 
     private val mRecyclerView: RecyclerView? = null
     private var mAdapter: ArticleListAdapter? = null
+    private lateinit var mRealm : Realm
 
     private val mLayoutManager: RecyclerView.LayoutManager by lazy{
         LinearLayoutManager(this)
@@ -55,11 +61,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Realm.init(this)
+        val realmConfig = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+        mRealm = Realm.getInstance(realmConfig)
         /* メニュー*/
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        //setSupportActionBar(toolbar)
 
-        //drawer = findViewById(R.id.drawer_layout)
         var toggle = object : ActionBarDrawerToggle(
                 this, /* host Activity */
                 drawer, /* DrawerLayout object */
@@ -67,7 +76,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 R.string.app_name, /* "open drawer" description */
                 R.string.app_name  /* "close drawer" description */
         ) {
-
             /** Called when a drawer has settled in a completely closed state.  */
             override fun onDrawerClosed(view: View?) {
                 setTitle("開く")
@@ -85,21 +93,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationView.setNavigationItemSelectedListener(this)
         /* メニューここまで */
 
-        //ArticleViewオブジェクトを生成
-        val articleView = ArticleView(applicationContext)
-
-        //val listAdapter = ArticleListAdapter(applicationContext)
-        //listAdapter.articles = listOf(dummyArticle("Kotlin入門","太郎"),dummyArticle("Java入門","じろう"))
-        //Articleオブジェクトを生成して、AirticleViewオブジェクトにセット
-
 
         val mRecyclerView : RecyclerView = findViewById(R.id.list_view)
         // use a linear layout manager
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        //mRecyclerView.setAdapter(listAdapter)
-
-
 
         val listAdapter = ArticleListAdapter(applicationContext)
         listAdapter.articles = mutableListOf(dummyArticle("Kotlin入門","1st"),dummyArticle("Java入門","2nd"),dummyArticle("Java入門","3rd"),dummyArticle("Java入門","4th"))
@@ -112,13 +109,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // ここで指定した方向にのみドラッグ可能
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                
+
                 val from = viewHolder.adapterPosition
                 val to = target.adapterPosition
-
-
                 listAdapter.notifyItemMoved(from, to)
-
                 return true
             }
 
@@ -132,7 +126,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mRecyclerView.setHasFixedSize(true)
         touchHelper.attachToRecyclerView(mRecyclerView)
         mRecyclerView.addItemDecoration(touchHelper)
-        // ここを忘れると動かないので注意
 
 
         /*
@@ -179,6 +172,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 change_view(R.layout.activity_sub)
             }
             R.id.nav_slideshow -> {
+                // create test
+                create_book("test1",1)
+                create_book("test2")
+
+                // read test
+                val getData = read_book()
+                getData.forEach {
+                    Log.d("debug","name :" + it.name + "price : " + it.price.toString())
+                }
+
+                // update test
+                update_book(getData.first()!!.id, "updated")
+
+                val getUpdatedData = read_book()
+                getUpdatedData.forEach {
+                    Log.d("debug","name :" + it.name + "price : " + it.price.toString())
+                }
+
+                // delete test
+                delete_book(getData.first()!!.id)
+
+                val getDeletedData = read_book()
+                getDeletedData.forEach {
+                    Log.d("debug","name :" + it.name + "price : " + it.price.toString())
+                }
+
             }
             R.id.nav_billed -> {
                 change_view(R.layout.activity_billed)
@@ -186,7 +205,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         return true
     }
-
+    fun create_book(name:String, price:Long = 0){
+        mRealm.executeTransaction {
+            var book = mRealm.createObject(Book::class.java , UUID.randomUUID().toString())
+            book.name = name
+            book.price = price
+            mRealm.copyToRealm(book)
+        }
+    }
+    fun read_book() : RealmResults<Book> {
+        return mRealm.where(Book::class.java).findAll()
+    }
+    fun update_book(id:String, name:String, price:Long = 0){
+        mRealm.executeTransaction {
+            var book = mRealm.where(Book::class.java).equalTo("id",id).findFirst()
+            book!!.name = name
+            if(price != 0.toLong()) {
+                book.price = price
+            }
+        }
+    }
+    fun delete_book(id:String){
+        mRealm.executeTransaction {
+            var book = mRealm.where(Book::class.java).equalTo("id",id).findAll()
+            book.deleteFromRealm(0)
+        }
+    }
     fun change_view(activity_name: Int){
         // 変更したいレイアウトを取得する
         val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout
@@ -203,6 +247,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             super.onBackPressed()
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        mRealm.close()
     }
     private fun dummyArticle(title: String, userName: String): Article =
             Article(id = "",
