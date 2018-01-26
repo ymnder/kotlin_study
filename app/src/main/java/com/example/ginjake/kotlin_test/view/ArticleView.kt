@@ -45,10 +45,10 @@ class ArticleView : FrameLayout {
 
     fun setArticle(article: Article) {
         titleTextView?.text = article.title
-        userNameTextView?.text = article.user.name
+        //userNameTextView?.text = article.user.name
 
         // TODO プロフィール画像をセットする
-        Glide.with(context).load(article.user.profileImageUrl).into(profileImageView)
+        //Glide.with(context).load(article.user.profileImageUrl).into(profileImageView)
     }
 
 

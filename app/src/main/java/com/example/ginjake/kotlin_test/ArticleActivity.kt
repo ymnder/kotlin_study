@@ -16,7 +16,7 @@ class ArticleActivity : AppCompatActivity() {
         private const val ARTICLE_EXTRA: String = "article"
         fun intent(context: Context, article: Article): Intent =
                 Intent(context, ArticleActivity::class.java)
-                        .putExtra(ARTICLE_EXTRA, article)
+                      //  .putExtra(ARTICLE_EXTRA, article)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,9 +26,9 @@ class ArticleActivity : AppCompatActivity() {
         val articleView:ArticleView = findViewById(R.id.article_view)
         val webView:WebView = findViewById(R.id.web_view)
 
-        val article: Article = intent.getParcelableExtra(ARTICLE_EXTRA)
-        articleView.setArticle(article)
-        webView.loadUrl(article.url)
+        //val article: Article = intent.getParcelableExtra(ARTICLE_EXTRA)
+        //articleView.setArticle(article)
+        //webView.loadUrl(article.url)
 
     }
 

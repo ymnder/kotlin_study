@@ -52,6 +52,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val mLayoutManager: RecyclerView.LayoutManager by lazy{
         LinearLayoutManager(this)
     }
+    private val listAdapter:ArticleListAdapter by lazy {
+        ArticleListAdapter(applicationContext)
+    }
 
     //左メニュー
     private val drawer: DrawerLayout by lazy{
@@ -98,10 +101,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // use a linear layout manager
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        val listAdapter = ArticleListAdapter(applicationContext)
         listAdapter.articles = mutableListOf(dummyArticle("Kotlin入門","1st"),dummyArticle("Java入門","2nd"),dummyArticle("Java入門","3rd"),dummyArticle("Java入門","4th"))
         mRecyclerView.setAdapter(listAdapter)
-
         val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.UP or ItemTouchHelper.DOWN
                         or ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT, ItemTouchHelper.UP or ItemTouchHelper.DOWN
@@ -144,7 +145,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .build()
         val articleClient = retrofit.create(ArticleClient::class.java)
 
-        val queryEditText: EditText = findViewById(R.id.query_edit_text)
+       // val queryEditText: EditText = findViewById(R.id.query_edit_text)
         val searchButton: Button = findViewById(R.id.search_button)
         /*
         searchButton.setOnClickListener {
@@ -173,30 +174,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_slideshow -> {
                 // create test
-                create_book("test1",1)
-                create_book("test2")
-
-                // read test
-                val getData = read_book()
-                getData.forEach {
-                    Log.d("debug","name :" + it.name + "price : " + it.price.toString())
+                Article.create(mRealm,"あほげほげ","https://hoge.com")
+                listAdapter.articles.add(dummyArticle("後から追加","5th"))
+                listAdapter.notifyDataSetChanged()
+                val getData_A = Article.read(mRealm)
+                Log.d("article","■↓■")
+                getData_A.forEach {
+                    Log.d("article","id :" + it.id + "title :" + it.title + "url : " + it.url.toString())
                 }
+                Log.d("article","■↑■")
 
                 // update test
-                update_book(getData.first()!!.id, "updated")
+                //update_book(getData.first()!!.id, "updated")
 
-                val getUpdatedData = read_book()
-                getUpdatedData.forEach {
-                    Log.d("debug","name :" + it.name + "price : " + it.price.toString())
-                }
-
-                // delete test
-                delete_book(getData.first()!!.id)
-
-                val getDeletedData = read_book()
-                getDeletedData.forEach {
-                    Log.d("debug","name :" + it.name + "price : " + it.price.toString())
-                }
 
             }
             R.id.nav_billed -> {
@@ -205,32 +195,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         return true
     }
-    fun create_book(name:String, price:Long = 0){
-        mRealm.executeTransaction {
-            var book = mRealm.createObject(Book::class.java , UUID.randomUUID().toString())
-            book.name = name
-            book.price = price
-            mRealm.copyToRealm(book)
-        }
-    }
-    fun read_book() : RealmResults<Book> {
-        return mRealm.where(Book::class.java).findAll()
-    }
-    fun update_book(id:String, name:String, price:Long = 0){
-        mRealm.executeTransaction {
-            var book = mRealm.where(Book::class.java).equalTo("id",id).findFirst()
-            book!!.name = name
-            if(price != 0.toLong()) {
-                book.price = price
-            }
-        }
-    }
-    fun delete_book(id:String){
-        mRealm.executeTransaction {
-            var book = mRealm.where(Book::class.java).equalTo("id",id).findAll()
-            book.deleteFromRealm(0)
-        }
-    }
+
+
     fun change_view(activity_name: Int){
         // 変更したいレイアウトを取得する
         val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout
@@ -255,8 +221,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun dummyArticle(title: String, userName: String): Article =
             Article(id = "",
                     title = title,
-                    url = "https://kotlinklang.org",
-                    user = User(id = "", name = userName, profileImageUrl =""))
+                    url = "https://kotlinklang.org")
+                   // user = User(id = "", name = userName, profileImageUrl =""))
 
 
 
