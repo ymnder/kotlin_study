@@ -18,7 +18,7 @@ import android.widget.TextView
 class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<ArticleListAdapter.ViewHolder>()  {
 
 
-    var articles: MutableList<Article> = arrayListOf()//emptyList()
+    var articles: MutableList<Article> = arrayListOf()
 
 class ViewHolder(itemView: ArticleView): RecyclerView.ViewHolder(itemView) {
     var set_article_item: ArticleView? = itemView
@@ -49,10 +49,4 @@ override fun getItemCount(): Int = articles.size
             ((convertView as? ArticleView) ?: ArticleView(context)).apply {
                 setArticle(articles[position])
             }
-
-    fun remove(position: Int) {
-
-        // mStudentList.removeAt(position)
-        //notifyItemRemoved(position)
-    }
 }

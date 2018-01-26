@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
+import android.graphics.Color
 import android.support.design.widget.BottomNavigationView.OnNavigationItemSelectedListener
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -34,6 +35,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.system.Os.read
+import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import io.realm.Realm
@@ -41,6 +43,7 @@ import io.realm.RealmConfiguration
 import java.util.*
 import com.example.ginjake.kotlin_test.model.Book
 import io.realm.RealmResults
+import rx.Observable
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -101,14 +104,48 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // use a linear layout manager
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        listAdapter.articles = mutableListOf(dummyArticle("Kotlin入門","1st"),dummyArticle("Java入門","2nd"),dummyArticle("Java入門","3rd"),dummyArticle("Java入門","4th"))
+        listAdapter.articles = mutableListOf<Article>()//mutableListOf(dummyArticle("Kotlin入門","1st"),dummyArticle("Java入門","2nd"),dummyArticle("Java入門","3rd"),dummyArticle("Java入門","4th"))
+
+        Article.read(mRealm).forEach {
+            listAdapter.articles.add(Article(id = it.id,
+                    title = it.title,
+                    url = it.url))
+        }
+
         mRecyclerView.setAdapter(listAdapter)
+
+        mRecyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                Log.d("touch","これはとれる")
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+                Log.d("touch","onTouchEvent")
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                Log.d("touch","onRequestDisallowInterceptTouchEvent")
+            }
+        })
+
         val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                        or ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT, ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                or ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
             // ここで指定した方向にのみドラッグ可能
 
+            //選択ステータスが変更された場合の処理を指定します
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG)
+                    viewHolder?.itemView?.alpha = 0.5f
+            }
+
+            // アニメーションが終了する時に呼ばれる
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                // e.g. 反透明にしていたのを元に戻す
+                viewHolder?.itemView?.alpha = 1.0f
+            }
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
 
                 val from = viewHolder.adapterPosition
@@ -120,6 +157,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // スワイプで削除する場合はここ
                 val swipedPosition = viewHolder.getAdapterPosition()
+                Log.d("swipe","ID:"+listAdapter.articles[swipedPosition].title)
+                Article.delete(mRealm,listAdapter.articles[swipedPosition].id)
                 listAdapter.articles.removeAt(swipedPosition);
                 listAdapter.notifyItemRemoved(swipedPosition);
             }
@@ -145,49 +184,47 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .build()
         val articleClient = retrofit.create(ArticleClient::class.java)
 
-       // val queryEditText: EditText = findViewById(R.id.query_edit_text)
+        val TaskText: EditText = findViewById(R.id.task_text)
         val searchButton: Button = findViewById(R.id.search_button)
-        /*
-        searchButton.setOnClickListener {
 
-            articleClient.search(queryEditText.text.toString())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    //.bindToLifecycle(this)
-                    .subscribe({
-                        queryEditText.text.clear()
-                        listAdapter.articles = it
-                        listAdapter.notifyDataSetChanged()
-                    }, {
-                        toast("エラー: $it")
-                    })
+        searchButton.setOnClickListener {
+            // create test
+
+            val new_article = Article.create(mRealm,TaskText.text.toString(),"http://www.ginjake.net/yagi/")
+            listAdapter.articles.add(new_article)
+            listAdapter.notifyDataSetChanged()
         }
-        */
+
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_top -> {
+                change_view(R.layout.activity_main)
+
+            }
             R.id.nav_version -> {
+                mRealm.executeTransaction(Realm.Transaction { realm -> realm.deleteAll() })
+                listAdapter.articles = arrayListOf()
+                listAdapter.notifyDataSetChanged()
             }
             R.id.nav_gallery -> {
-                change_view(R.layout.activity_sub)
+
+                listAdapter.articles.add(
+                    Article.create(mRealm,"ことりん","https://www.google.co.jp/search?q=%E3%81%93%E3%81%A8%E3%82%8A%E3%82%93&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiQ1YTaofXYAhURhbwKHYwABZkQ_AUICigB&biw=2133&bih=1054")
+                )
+                listAdapter.articles.add(
+                        Article.create(mRealm,"honoka","http://honokak.osaka/")
+                )
+                listAdapter.articles.add(
+                        Article.create(mRealm,"るびぃ","https://ja.wikipedia.org/wiki/Ruby_on_Rails")
+                )
+
+                listAdapter.notifyDataSetChanged()
+
             }
             R.id.nav_slideshow -> {
-                // create test
-                Article.create(mRealm,"あほげほげ","https://hoge.com")
-                listAdapter.articles.add(dummyArticle("後から追加","5th"))
-                listAdapter.notifyDataSetChanged()
-                val getData_A = Article.read(mRealm)
-                Log.d("article","■↓■")
-                getData_A.forEach {
-                    Log.d("article","id :" + it.id + "title :" + it.title + "url : " + it.url.toString())
-                }
-                Log.d("article","■↑■")
-
-                // update test
-                //update_book(getData.first()!!.id, "updated")
-
-
+                change_view(R.layout.activity_sub)
             }
             R.id.nav_billed -> {
                 change_view(R.layout.activity_billed)

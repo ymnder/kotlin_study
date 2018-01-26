@@ -41,13 +41,16 @@ open class Article(
             return database.where(Article::class.java).findAll()
         }
 
-        fun create(database : Realm, title:String, url:String = "hoge"){
+        fun create(database : Realm, title:String, url:String = "hoge"):Article{
+            var random_id:String = ""
             database.executeTransaction {
-                var article = database.createObject(Article::class.java , UUID.randomUUID().toString())
+                random_id = UUID.randomUUID().toString()
+                var article = database.createObject(Article::class.java , random_id)
                 article.title = title
                 article.url = url
                 database.copyToRealm(article)
             }
+            return Article(random_id,title,url)
         }
         fun update(database :Realm, id:String, title:String, url:String){
             database.executeTransaction {
@@ -60,6 +63,12 @@ open class Article(
             database.executeTransaction {
                 var database = database.where(Article::class.java).equalTo("id",id).findAll()
                 database.deleteFromRealm(0)
+            }
+        }
+        fun delete_all(database : Realm){
+            database.executeTransaction {
+                var database = database.where(Article::class.java).findAll()
+                database.deleteFromRealm(100)
             }
         }
     }
