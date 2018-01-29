@@ -42,6 +42,8 @@ import io.realm.Realm
 import io.realm.RealmConfiguration
 import java.util.*
 import com.example.ginjake.kotlin_test.model.Book
+import com.facebook.stetho.Stetho
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider
 import io.realm.RealmResults
 import rx.Observable
 
@@ -64,6 +66,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         findViewById<View>(R.id.drawer_layout) as DrawerLayout
     }
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .build());
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
