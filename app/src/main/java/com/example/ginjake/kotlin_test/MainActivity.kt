@@ -1,58 +1,42 @@
 package com.example.ginjake.kotlin_test
 
-import android.app.PendingIntent.getActivity
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
-import android.content.Intent
-import android.graphics.Color
-import android.support.design.widget.BottomNavigationView.OnNavigationItemSelectedListener
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ListView
-import com.example.ginjake.kotlin_test.client.ArticleClient
 import com.example.ginjake.kotlin_test.model.Article
-import com.example.ginjake.kotlin_test.model.User
-import com.example.ginjake.kotlin_test.view.ArticleView
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import android.support.annotation.NonNull
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.system.Os.read
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import com.example.ginjake.kotlin_test.client.UpdateClient
 import io.realm.Realm
 import io.realm.RealmConfiguration
-import java.util.*
-import com.example.ginjake.kotlin_test.model.Book
 import com.facebook.stetho.Stetho
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
-import io.realm.RealmResults
-import rx.Observable
 
+
+var mRealm : Realm? = null
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
 
-    private val mRecyclerView: RecyclerView? = null
+    private lateinit var mRecyclerView: RecyclerView
     private var mAdapter: ArticleListAdapter? = null
-    private lateinit var mRealm : Realm
+    //private lateinit var mRealm : Realm
 
     private val mLayoutManager: RecyclerView.LayoutManager by lazy{
         LinearLayoutManager(this)
@@ -67,20 +51,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
     override fun onCreate(savedInstanceState: Bundle?) {
 
+
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        /* debug用 */
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                         .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
                         .build());
 
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
         Realm.init(this)
         val realmConfig = RealmConfiguration.Builder()
                 .deleteRealmIfMigrationNeeded()
                 .build()
         mRealm = Realm.getInstance(realmConfig)
+
+        //アップデート確認
+        UpdateClient.get();
+
         /* メニュー*/
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
 
@@ -101,7 +91,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setTitle("閉じる")
             }
         }
-        drawer.setDrawerListener(toggle)
+       // drawer.setDrawerListener(toggle)
         toggle.syncState()
 
         val navigationView:NavigationView = findViewById(R.id.navigation_view)
@@ -109,20 +99,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         /* メニューここまで */
 
 
-        val mRecyclerView : RecyclerView = findViewById(R.id.list_view)
-        // use a linear layout manager
+        //リスト
+        val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout
+        // レイアウトをR.layout.sampleに変更する
+        getLayoutInflater().inflate(R.layout.activity_list, layout);
+
+
+        mRecyclerView = findViewById<View?>(R.id.list_view) as RecyclerView
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        listAdapter.articles = mutableListOf<Article>()//mutableListOf(dummyArticle("Kotlin入門","1st"),dummyArticle("Java入門","2nd"),dummyArticle("Java入門","3rd"),dummyArticle("Java入門","4th"))
+        listAdapter.articles = mutableListOf<Article>()
 
-        Article.read(mRealm).forEach {
+        Article.read().forEach {
             listAdapter.articles.add(Article(id = it.id,
                     title = it.title,
                     url = it.url))
         }
 
         mRecyclerView.setAdapter(listAdapter)
-
         mRecyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 Log.d("touch","これはとれる")
@@ -167,7 +161,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // スワイプで削除する場合はここ
                 val swipedPosition = viewHolder.getAdapterPosition()
                 Log.d("swipe","ID:"+listAdapter.articles[swipedPosition].title)
-                Article.delete(mRealm,listAdapter.articles[swipedPosition].id)
+                Article.delete(id=listAdapter.articles[swipedPosition].id)
                 listAdapter.articles.removeAt(swipedPosition);
                 listAdapter.notifyItemRemoved(swipedPosition);
             }
@@ -191,7 +185,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
-        val articleClient = retrofit.create(ArticleClient::class.java)
+        //val articleClient = retrofit.create(ArticleClient::class.java)
 
         val TaskText: EditText = findViewById(R.id.task_text)
         val searchButton: Button = findViewById(R.id.search_button)
@@ -199,7 +193,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         searchButton.setOnClickListener {
             // create test
 
-            val new_article = Article.create(mRealm,TaskText.text.toString(),"http://www.ginjake.net/yagi/")
+            val new_article = Article.create(title = TaskText.text.toString())
             listAdapter.articles.add(new_article)
             listAdapter.notifyDataSetChanged()
         }
@@ -209,24 +203,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_top -> {
-                change_view(R.layout.activity_main)
+                change_view(R.layout.activity_list)
+                mRecyclerView = findViewById<View?>(R.id.list_view) as RecyclerView
+
+                val aLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
+                mRecyclerView.setLayoutManager(aLayoutManager);
+
+                listAdapter.articles = mutableListOf<Article>()
+                Article.read().forEach {
+                    listAdapter.articles.add(Article(id = it.id,
+                            title = it.title,
+                            url = it.url))
+                }
+
+                mRecyclerView.setAdapter(listAdapter)
+                // TODO 遷移前みたいに、ここにスワイプイベントとか紐付ける
 
             }
             R.id.nav_version -> {
-                mRealm.executeTransaction(Realm.Transaction { realm -> realm.deleteAll() })
+                mRealm?.executeTransaction(Realm.Transaction { realm -> realm.deleteAll() })
                 listAdapter.articles = arrayListOf()
                 listAdapter.notifyDataSetChanged()
             }
             R.id.nav_gallery -> {
 
+                //テストデータを追加する
                 listAdapter.articles.add(
-                    Article.create(mRealm,"ことりん","https://www.google.co.jp/search?q=%E3%81%93%E3%81%A8%E3%82%8A%E3%82%93&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiQ1YTaofXYAhURhbwKHYwABZkQ_AUICigB&biw=2133&bih=1054")
+                    Article.create(title="ことりん",url="https://www.google.co.jp/search?q=%E3%81%93%E3%81%A8%E3%82%8A%E3%82%93&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiQ1YTaofXYAhURhbwKHYwABZkQ_AUICigB&biw=2133&bih=1054")
                 )
                 listAdapter.articles.add(
-                        Article.create(mRealm,"honoka","http://honokak.osaka/")
+                        Article.create(title="honoka",url="http://honokak.osaka/")
                 )
                 listAdapter.articles.add(
-                        Article.create(mRealm,"るびぃ","https://ja.wikipedia.org/wiki/Ruby_on_Rails")
+                        Article.create(title="るびぃ",url="https://ja.wikipedia.org/wiki/Ruby_on_Rails")
                 )
 
                 listAdapter.notifyDataSetChanged()
@@ -262,15 +271,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
     override fun onDestroy() {
         super.onDestroy()
-        mRealm.close()
+        mRealm?.close()
     }
-    private fun dummyArticle(title: String, userName: String): Article =
-            Article(id = "",
-                    title = title,
-                    url = "https://kotlinklang.org")
-                   // user = User(id = "", name = userName, profileImageUrl =""))
-
-
-
-
 }
