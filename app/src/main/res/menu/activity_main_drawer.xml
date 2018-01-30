@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <group>
 
         <item
@@ -7,15 +9,15 @@
             android:title="トップ"
             />
         <item
-            android:id="@+id/nav_version"
+            android:id="@+id/nav_delete_all"
             android:title="データ削除"
             />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_test_data"
             android:icon="@android:drawable/ic_menu_gallery"
             android:title="テストデータ" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_kotori"
             android:icon="@android:drawable/ic_menu_slideshow"
             android:title="南ことりん" />
         <item

@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/kotori_text"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="56dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:maxLines="2"
+    android:textColor="@android:color/black"
+    android:textSize="18sp"
+    android:text="南ことり"/>
 
 
     <ImageView
@@ -8,8 +26,8 @@
         android:layout_width="274dp"
         android:layout_height="216dp"
         android:layout_marginStart="52dp"
-        android:layout_marginTop="236dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/kotori3" />
-
+</LinearLayout>
