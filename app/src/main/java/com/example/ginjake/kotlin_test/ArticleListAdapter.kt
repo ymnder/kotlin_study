@@ -37,16 +37,9 @@ override fun onBindViewHolder(holder: ViewHolder?, position: Int): Unit {
     holder?.set_article_item?.setArticle(articles[position])
 }
 
-override fun getItemCount(): Int = articles.size
-
-
+    override fun getItemCount(): Int = articles.size
     fun getCount(): Int = articles.size
     fun getItem(position : Int): Any? = articles[position]
     override fun getItemId(position :Int) : Long = 0
-    fun getView(position: Int,
-                convertView:View?,
-                parent: ViewGroup?): View =
-            ((convertView as? ArticleView) ?: ArticleView(context)).apply {
-                setArticle(articles[position])
-            }
+
 }

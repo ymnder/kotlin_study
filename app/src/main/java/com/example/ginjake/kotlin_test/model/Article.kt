@@ -1,7 +1,5 @@
 package com.example.ginjake.kotlin_test.model
 
-import com.example.ginjake.kotlin_test.model.User
-
 import android.os.Parcel
 import android.os.Parcelable
 import com.example.ginjake.kotlin_test.mRealm
