@@ -1,24 +1,20 @@
-package com.example.ginjake.kotlin_test.view
+package com.example.ginjake.kotlin_test.viewmodel
 
 /**
  * Created by ginjake on 2018/01/19.
  */
 import android.content.Context
-import android.graphics.Color
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.*
-import com.bumptech.glide.Glide
 import com.example.ginjake.kotlin_test.ArticleListAdapter
 import com.example.ginjake.kotlin_test.R
-import com.example.ginjake.kotlin_test.mRealm
 import com.example.ginjake.kotlin_test.model.Article
 
-class ArticleListView : RecyclerView {
+class ArticleViewModel : RecyclerView {
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?,
@@ -29,23 +25,19 @@ class ArticleListView : RecyclerView {
                 defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
 
-
-    private lateinit var  mRecyclerView: RecyclerView
-
-
     public val listAdapter: ArticleListAdapter by lazy {
         ArticleListAdapter(context)
     }
 
-
     fun create_list_view(layout:LinearLayout){
 
         val mLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-
         LayoutInflater.from(context).inflate(R.layout.activity_list, layout)
-        mRecyclerView = layout.findViewById(R.id.list_view)
+        val mRecyclerView: RecyclerView = layout.findViewById(R.id.list_view)
+
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        //記事一覧の中身をセットするため初期化
         listAdapter.articles = mutableListOf<Article>()
 
         //DBからデータを読み込みアダプターにセットする
@@ -55,7 +47,7 @@ class ArticleListView : RecyclerView {
                     title = it.title,
                     url = it.url))
         }
-        //アダプターをViewnに適用
+        //アダプターをViewに適用
         mRecyclerView.setAdapter(listAdapter)
 
         //リストアイテムのイベント処理
@@ -93,7 +85,6 @@ class ArticleListView : RecyclerView {
                 listAdapter.notifyItemRemoved(swipedPosition);
             }
         })
-
 
 
         mRecyclerView.setHasFixedSize(true)

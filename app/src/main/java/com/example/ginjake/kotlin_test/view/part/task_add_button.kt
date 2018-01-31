@@ -26,7 +26,7 @@ class TaskAddButton : View {
                 defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun create_task_add_button(layout: LinearLayout){
-        LayoutInflater.from(context).inflate(R.layout.part_task_add_button, layout)
+        LayoutInflater.from(context).inflate(R.menu.task_add_button, layout)
         //タスク登録ボタンの処理
         val TaskText: EditText = layout.findViewById(R.id.task_text)
         val searchButton: Button = layout.findViewById(R.id.search_button)

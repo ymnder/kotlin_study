@@ -5,21 +5,15 @@ import android.support.v7.app.AppCompatActivity
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
-import android.util.Log
 import android.view.MenuItem
 import com.example.ginjake.kotlin_test.model.Article
 
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
-
 
 import android.support.v7.widget.Toolbar
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.view.Menu
-import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import com.example.ginjake.kotlin_test.client.UpdateClient
-import com.example.ginjake.kotlin_test.view.ArticleListView
+import com.example.ginjake.kotlin_test.viewmodel.ArticleViewModel
 import com.example.ginjake.kotlin_test.view.part.DrawerMenu
 import com.example.ginjake.kotlin_test.view.part.TaskAddButton
 import io.realm.Realm
@@ -37,8 +31,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         findViewById<View>(R.id.drawer_layout) as DrawerLayout
     }
     //リストビュー
-    private val article_list: ArticleListView by lazy{
-        ArticleListView(this)
+    private val article_list: ArticleViewModel by lazy{
+        ArticleViewModel(this)
     }
     //タスク追加ボタン
     private val task_add_button: TaskAddButton by lazy{
@@ -132,6 +126,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     fun change_view(layout:LinearLayout,activity_name: Int){
+        //TODO fragmentのreplaceで対応する
+
         // レイアウトのビューをすべて削除する
         layout.removeAllViews();
         // レイアウトをR.layout.sampleに変更する
