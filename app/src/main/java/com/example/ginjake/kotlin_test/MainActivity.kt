@@ -10,6 +10,7 @@ import com.example.ginjake.kotlin_test.model.Article
 
 
 import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.example.ginjake.kotlin_test.client.UpdateClient
@@ -126,16 +127,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     fun change_view(layout:LinearLayout,activity_name: Int){
-        //TODO fragmentのreplaceで対応する
-
-        // レイアウトのビューをすべて削除する
-        layout.removeAllViews();
-        // レイアウトをR.layout.sampleに変更する
-        getLayoutInflater().inflate(activity_name, layout);
-        drawer.closeDrawers();
+        layout.removeAllViews(); // レイアウトのビューをすべて削除する
+        getLayoutInflater().inflate(activity_name, layout)
+        drawer.closeDrawers(); //メニューを閉じる
     }
     override fun onBackPressed() {
-        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         } else {
