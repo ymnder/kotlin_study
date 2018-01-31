@@ -4,15 +4,25 @@ package com.example.ginjake.kotlin_test.viewmodel
  * Created by ginjake on 2018/01/19.
  */
 import android.content.Context
+import android.graphics.Color
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_UP
+import android.view.View
 import android.widget.*
 import com.example.ginjake.kotlin_test.ArticleListAdapter
 import com.example.ginjake.kotlin_test.R
 import com.example.ginjake.kotlin_test.model.Article
+import android.widget.Toast
+import com.example.ginjake.kotlin_test.MainActivity
+import kotlinx.android.synthetic.main.activity_article.view.*
+import kotlinx.android.synthetic.main.activity_list.view.*
+
 
 class ArticleViewModel : RecyclerView {
     constructor(context: Context?) : super(context)
@@ -85,7 +95,6 @@ class ArticleViewModel : RecyclerView {
                 listAdapter.notifyItemRemoved(swipedPosition);
             }
         })
-
 
         mRecyclerView.setHasFixedSize(true)
         touchHelper.attachToRecyclerView(mRecyclerView)

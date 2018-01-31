@@ -14,28 +14,31 @@ import com.example.ginjake.kotlin_test.view.ArticleView
 import java.nio.file.Files.size
 import android.view.LayoutInflater
 import android.widget.TextView
+import android.R.attr.onClick
+import android.view.MotionEvent
+
 
 class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<ArticleListAdapter.ViewHolder>()  {
 
 
     var articles: MutableList<Article> = arrayListOf()
-
-class ViewHolder(itemView: ArticleView): RecyclerView.ViewHolder(itemView) {
-    var set_article_item: ArticleView? = itemView
-}
-
-override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    private lateinit var listener: View.OnTouchListener
 
 
-    val v:ArticleView = ArticleView(context)
+    class ViewHolder(itemView: ArticleView): RecyclerView.ViewHolder(itemView) {
+        var set_article_item: ArticleView? = itemView
+    }
 
-    val vh: ViewHolder = ViewHolder(v)
-    return vh
-}
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+        val v:ArticleView = ArticleView(context)
+        val vh: ViewHolder = ViewHolder(v)
+        return vh
+    }
 
-override fun onBindViewHolder(holder: ViewHolder?, position: Int): Unit {
-    holder?.set_article_item?.setArticle(articles[position])
-}
+    override fun onBindViewHolder(holder: ViewHolder?, position: Int): Unit {
+        holder?.set_article_item?.setArticle(articles[position])
+        holder?.set_article_item?.view?.setId(holder?.getAdapterPosition());
+    }
 
     override fun getItemCount(): Int = articles.size
     fun getCount(): Int = articles.size
