@@ -1,16 +1,12 @@
 package com.example.ginjake.kotlin_test.view.part
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import com.example.ginjake.kotlin_test.ArticleListAdapter
 import com.example.ginjake.kotlin_test.R
 import com.example.ginjake.kotlin_test.model.Article
 
@@ -35,7 +31,6 @@ class TaskAddButton : View {
             // データ自体は入るが、画面は更新されない。この機能自体が仮なので。
             val new_article = Article.create(title = TaskText.text.toString())
         }
-
-}
+    }
 
 }

@@ -7,10 +7,7 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import com.example.ginjake.kotlin_test.R
 
-
-
 class DrawerMenu()  {
-
 
     fun create_menu(activity: Activity,drawer: DrawerLayout,toolbar:Toolbar){
         /* メニュー*/

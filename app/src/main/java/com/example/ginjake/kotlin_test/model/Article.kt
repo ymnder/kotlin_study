@@ -12,7 +12,6 @@ import io.realm.annotations.Required
 import java.util.*
 
 
-
 open class Article(
         @PrimaryKey open var id : String = UUID.randomUUID().toString(),
         @Required open var title : String = "",
@@ -25,10 +24,8 @@ open class Article(
             override fun createFromParcel(source: Parcel): Article = source.run {
                 Article(readString(), readString(), readString())
             }
-
             override fun newArray(size: Int): Array<Article?> = arrayOfNulls(size)
         }
-
 
         fun read(database :Realm = mRealm!!) : RealmResults<Article> {
             return database.where(Article::class.java).findAll()
@@ -45,6 +42,7 @@ open class Article(
             }
             return Article(random_id,title,url)
         }
+
         fun update(database :Realm = mRealm!!, id:String, title:String, url:String){
             database.executeTransaction {
                 var article = database.where(Article::class.java).equalTo("id",id).findFirst()
@@ -52,12 +50,14 @@ open class Article(
                 article!!.url = url
             }
         }
+
         fun delete(database :Realm = mRealm!!, id:String){
             database.executeTransaction {
                 var database = database.where(Article::class.java).equalTo("id",id).findAll()
                 database.deleteFromRealm(0)
             }
         }
+
         fun delete_all(database :Realm = mRealm!!){
             database.executeTransaction {
                 var database = database.where(Article::class.java).findAll()
