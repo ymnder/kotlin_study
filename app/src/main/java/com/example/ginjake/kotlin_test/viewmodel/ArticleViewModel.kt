@@ -11,12 +11,15 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.widget.*
 import com.example.ginjake.kotlin_test.ArticleListAdapter
 import com.example.ginjake.kotlin_test.R
 import com.example.ginjake.kotlin_test.model.Article
 import android.widget.Toast
-
+import android.view.animation.AnimationUtils
+import android.view.animation.Animation
+import com.example.ginjake.kotlin_test.view.ArticleSingleView
 
 
 class ArticleViewModel : RecyclerView {
@@ -93,10 +96,11 @@ class ArticleViewModel : RecyclerView {
 
         //タップの判定と処理
         listAdapter.touchViewAction = {
-            context:Context,event:MotionEvent,text:String ->
+            context:Context,event:MotionEvent,article:Article ->
             if (event.action == MotionEvent.ACTION_UP) {
                 if(event.eventTime - event.downTime < getResources().getInteger(R.integer.longTapTime) ) { //ロングタップと判定し、タップアクションを行いたくない場合がある
-                    Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "タップ", Toast.LENGTH_LONG).show()
+                    ArticleSingleView(context,layout,article)
                 }
             }
         }

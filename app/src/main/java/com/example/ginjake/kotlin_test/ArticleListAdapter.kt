@@ -19,12 +19,11 @@ class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<Arti
 
     var articles: MutableList<Article> = arrayListOf()
 
-    //TODO 第三引数を可変長にしたほうが良い？
-    public var touchViewAction = {context:Context, event:MotionEvent, text:String -> }
-    inner class TouchEventClass(var toast_text:String):View.OnTouchListener{
+    public var touchViewAction = {context:Context, event:MotionEvent, article:Article -> }
+    inner class TouchEventClass(var article:Article):View.OnTouchListener{
         override fun onTouch(view: View, event: MotionEvent): Boolean {
             //処理の中身自体はviewModelに書きたいため、ラムダで分離する。
-            touchViewAction(context,event,toast_text)
+            touchViewAction(context,event,article)
             return true
         }
     }
@@ -42,7 +41,7 @@ class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<Arti
     override fun onBindViewHolder(holder: ViewHolder?, position: Int): Unit {
         holder?.set_article_item?.setArticle(articles[position])
         holder?.set_article_item?.view?.setId(holder?.getAdapterPosition());
-        holder?.set_article_item?.view?.setOnTouchListener(TouchEventClass(holder?.set_article_item?.titleTextView?.text.toString()))
+        holder?.set_article_item?.view?.setOnTouchListener(TouchEventClass(articles[position]))
     }
 
     override fun getItemCount(): Int = articles.size

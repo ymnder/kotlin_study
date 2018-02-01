@@ -40,7 +40,6 @@ class ArticleView : FrameLayout {
         profileImageView = findViewById(R.id.profile_image_view)
         titleTextView = findViewById(R.id.title_text_view)
         userNameTextView = findViewById(R.id.user_name_text_view)
-
     }
 
     fun setArticle(article: Article) {
