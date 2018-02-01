@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/title_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_toRightOf="@id/profile_image_view"
@@ -28,7 +28,7 @@
         tools:text="記事のタイトル"/>
     <TextView
         android:id="@+id/user_name_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/title_text_view"
         android:layout_below="@id/title_text_view"

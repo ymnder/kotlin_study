@@ -8,45 +8,46 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import com.example.ginjake.kotlin_test.model.Article
 import com.example.ginjake.kotlin_test.view.ArticleView
-import java.nio.file.Files.size
-import android.view.LayoutInflater
-import android.widget.TextView
+import android.view.MotionEvent
+
+
 
 class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<ArticleListAdapter.ViewHolder>()  {
 
 
     var articles: MutableList<Article> = arrayListOf()
 
-class ViewHolder(itemView: ArticleView): RecyclerView.ViewHolder(itemView) {
-    var set_article_item: ArticleView? = itemView
-}
+    //TODO 第三引数を可変長にしたほうが良い？
+    public var touchViewAction = {context:Context, event:MotionEvent, text:String -> }
+    inner class TouchEventClass(var toast_text:String):View.OnTouchListener{
+        override fun onTouch(view: View, event: MotionEvent): Boolean {
+            //処理の中身自体はviewModelに書きたいため、ラムダで分離する。
+            touchViewAction(context,event,toast_text)
+            return true
+        }
+    }
 
-override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    class ViewHolder(itemView: ArticleView): RecyclerView.ViewHolder(itemView) {
+        var set_article_item: ArticleView? = itemView
+    }
 
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+        val v:ArticleView = ArticleView(context)
+        val vh: ViewHolder = ViewHolder(v)
+        return vh
+    }
 
-    val v:ArticleView = ArticleView(context)
+    override fun onBindViewHolder(holder: ViewHolder?, position: Int): Unit {
+        holder?.set_article_item?.setArticle(articles[position])
+        holder?.set_article_item?.view?.setId(holder?.getAdapterPosition());
+        holder?.set_article_item?.view?.setOnTouchListener(TouchEventClass(holder?.set_article_item?.titleTextView?.text.toString()))
+    }
 
-    val vh: ViewHolder = ViewHolder(v)
-    return vh
-}
-
-override fun onBindViewHolder(holder: ViewHolder?, position: Int): Unit {
-    holder?.set_article_item?.setArticle(articles[position])
-}
-
-override fun getItemCount(): Int = articles.size
-
-
+    override fun getItemCount(): Int = articles.size
     fun getCount(): Int = articles.size
     fun getItem(position : Int): Any? = articles[position]
     override fun getItemId(position :Int) : Long = 0
-    fun getView(position: Int,
-                convertView:View?,
-                parent: ViewGroup?): View =
-            ((convertView as? ArticleView) ?: ArticleView(context)).apply {
-                setArticle(articles[position])
-            }
+
 }

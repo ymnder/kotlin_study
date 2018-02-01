@@ -19,7 +19,6 @@ open class Version(
 
     companion object {
 
-
         fun update_check(database : Realm= mRealm!!, version_num: Double ) : Boolean {
             return if (database.where(Version::class.java).greaterThanOrEqualTo("version",version_num).findAll().size == 0)  true else false
         }

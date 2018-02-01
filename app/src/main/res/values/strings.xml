@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">kotlin_test</string>
+    <string name="open">開く</string>
+    <string name="close">閉じる</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
