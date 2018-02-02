@@ -32,6 +32,7 @@ class UpdateClient()  {
                             Version.create(version_num = version)
                             // TODO アップデート処理
                             Log.d("json", "アップデート")
+                            this.getDataFromTestApi()
                         } else {
                             Log.d("json", "既に最新")
                         }
@@ -45,27 +46,24 @@ class UpdateClient()  {
 
             }
         }
-        fun getUpdate() {
+        fun getDataFromTestApi() {
             "http://www.ginjake.net/kotlinApi/create_json.php".httpGet().responseJson { request, response, result ->
                 when (result) {
                 // ステータスコード 2xx
                     is Result.Success -> {
+                        //jsonはこうやって処理する API自体は前に遊びで作った、pinterestからスクレイピングした結果を返すしょーもないやつ
                         val json = result.value.obj()
-                        val results =json.get("results") as JSONArray
-                        val version:Double = ((results[0] as JSONObject)["version"] as String).toDouble()
-                        //result.forEach{
-
-                        //}
-                        //for (item in results){
-
-//                        }
-                        if (Version.update_check(version_num=version)) {
-                            Version.create(version_num = version)
-                            // TODO アップデート処理
-                            Log.d("json", "アップデート")
-                        } else {
-                            Log.d("json", "既に最新")
+                        val results = json.get("results") as JSONArray
+                        for (i in 0..(results.length() - 1)) {
+                            val item = results.getJSONObject(i)
+                            Article.create(
+                                    title = item["description"].toString(),
+                                    url = item["link"].toString(),
+                                    thumbnail = item["url"].toString(),
+                                    star = false
+                            )
                         }
+
 
                     }
                 // ステータスコード 2xx以外

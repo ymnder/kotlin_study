@@ -157,6 +157,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_billed -> {
                 change_view(layout,R.layout.activity_billed)
             }
+            R.id.nav_test_data_api -> {
+                UpdateClient.getDataFromTestApi();
+
+                change_view(layout,R.layout.activity_list)
+
+                /* タスク追加ボタン */
+                task_add_button.create_task_add_button(layout)
+
+                /* 一覧 */
+                article_list.create_list_view(layout)
+            }
+
         }
         return true
     }
@@ -179,3 +191,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mRealm?.close()
     }
 }
+

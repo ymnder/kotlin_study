@@ -17,6 +17,10 @@
             android:icon="@android:drawable/ic_menu_gallery"
             android:title="テストデータ" />
         <item
+            android:id="@+id/nav_test_data_api"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="テストデータFromAPI" />
+        <item
             android:id="@+id/nav_kotori"
             android:icon="@android:drawable/ic_menu_slideshow"
             android:title="南ことりん" />
