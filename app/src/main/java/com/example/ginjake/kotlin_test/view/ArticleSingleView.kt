@@ -32,10 +32,10 @@ class ArticleSingleView(context: Context?, layout: LinearLayout, article: Articl
         layout.removeAllViews(); // レイアウトのビューをすべて削除する
         view = LayoutInflater.from(context).inflate(R.layout.view_article_single, layout)
 
-        var titleTextView: TextView = layout.findViewById(R.id.single_title_text_view)
+        val titleTextView: TextView = layout.findViewById(R.id.single_title_text_view)
         titleTextView.text = article.title
 
-        var userNameTextView: TextView = layout.findViewById(R.id.user_name_text_view)
+        val userNameTextView: TextView = layout.findViewById(R.id.user_name_text_view)
         userNameTextView.text = "そのうち名前を表示。"
 
         val webView:WebView = layout.findViewById(R.id.web_view)
@@ -43,7 +43,7 @@ class ArticleSingleView(context: Context?, layout: LinearLayout, article: Articl
         webView.loadUrl(article.url)
 
         val profileImageView: ImageView = layout.findViewById(R.id.profile_image_view)
-        Glide.with(context).load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4UPAZXWkA3cMiUZzS9aCBIsyJtsZSRThgYmTB1bCEt1SFWan5WA").into(profileImageView)
+        Glide.with(context).load(article.thumbnail).into(profileImageView)
         view.startAnimation(anim)
 
     }

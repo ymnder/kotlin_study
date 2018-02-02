@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "900987711232",
+    "firebase_url": "https://minami-kotori-37814.firebaseio.com",
+    "project_id": "minami-kotori-37814",
+    "storage_bucket": "minami-kotori-37814.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900987711232:android:30968f4bba10a3b8",
+        "android_client_info": {
+          "package_name": "com.example.ginjake.kotlin_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "900987711232-dil2nkiltg85uchtl70ketki24r2stg0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4mjZVwUIa9dzm-XP4XZLBD9VfwGodsio"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

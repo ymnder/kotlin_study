@@ -29,7 +29,7 @@ class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<Arti
     }
 
     class ViewHolder(itemView: ArticleView): RecyclerView.ViewHolder(itemView) {
-        var set_article_item: ArticleView? = itemView
+        var set_article_item: ArticleView = itemView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -38,10 +38,10 @@ class ArticleListAdapter(public val context: Context): RecyclerView.Adapter<Arti
         return vh
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int): Unit {
-        holder?.set_article_item?.setArticle(articles[position])
-        holder?.set_article_item?.view?.setId(holder?.getAdapterPosition());
-        holder?.set_article_item?.view?.setOnTouchListener(TouchEventClass(articles[position]))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit {
+        holder.set_article_item.setArticle(articles[position])
+        holder.set_article_item.view.setId(holder.getAdapterPosition());
+        holder.set_article_item.view.setOnTouchListener(TouchEventClass(articles[position]))
     }
 
     override fun getItemCount(): Int = articles.size

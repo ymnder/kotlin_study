@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.ginjake.kotlin_test.R
 import com.example.ginjake.kotlin_test.model.Article
 
@@ -44,10 +45,7 @@ class ArticleView : FrameLayout {
 
     fun setArticle(article: Article) {
         titleTextView?.text = article.title
-        //userNameTextView?.text = article.user.name
-
-        // TODO プロフィール画像をセットする
-        //Glide.with(context).load(article.user.profileImageUrl).into(profileImageView)
+        Glide.with(context).load(article.thumbnail).into(profileImageView)
 
     }
 

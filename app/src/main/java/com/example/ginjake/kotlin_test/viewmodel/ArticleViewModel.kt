@@ -11,14 +11,11 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.widget.*
 import com.example.ginjake.kotlin_test.ArticleListAdapter
 import com.example.ginjake.kotlin_test.R
 import com.example.ginjake.kotlin_test.model.Article
 import android.widget.Toast
-import android.view.animation.AnimationUtils
-import android.view.animation.Animation
 import com.example.ginjake.kotlin_test.view.ArticleSingleView
 
 
@@ -52,7 +49,10 @@ class ArticleViewModel : RecyclerView {
         {
             listAdapter.articles.add(Article(id = it.id,
                     title = it.title,
-                    url = it.url))
+                    url = it.url,
+                    thumbnail = it.thumbnail,
+                    star = it.star
+                    ))
         }
 
         //アダプターをViewに適用

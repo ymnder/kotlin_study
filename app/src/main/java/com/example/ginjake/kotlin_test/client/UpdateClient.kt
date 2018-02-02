@@ -19,8 +19,8 @@ class UpdateClient()  {
 
     companion object {
 
-        fun get() {
-            "http://www.ginjake.net/kotlinApi/version.php".httpGet(listOf("zipcode" to "7830060")).responseJson { request, response, result ->
+        fun getVersion() {
+            "http://www.ginjake.net/kotlinApi/version.php".httpGet().responseJson { request, response, result ->
                 when (result) {
                 // ステータスコード 2xx
                     is Result.Success -> {
@@ -28,6 +28,37 @@ class UpdateClient()  {
                         val results =json.get("results") as JSONArray
                         val version:Double = ((results[0] as JSONObject)["version"] as String).toDouble()
 
+                        if (Version.update_check(version_num=version)) {
+                            Version.create(version_num = version)
+                            // TODO アップデート処理
+                            Log.d("json", "アップデート")
+                        } else {
+                            Log.d("json", "既に最新")
+                        }
+
+                    }
+                // ステータスコード 2xx以外
+                    is Result.Failure -> {
+                        // TODO エラー処理
+                    }
+                }
+
+            }
+        }
+        fun getUpdate() {
+            "http://www.ginjake.net/kotlinApi/create_json.php".httpGet().responseJson { request, response, result ->
+                when (result) {
+                // ステータスコード 2xx
+                    is Result.Success -> {
+                        val json = result.value.obj()
+                        val results =json.get("results") as JSONArray
+                        val version:Double = ((results[0] as JSONObject)["version"] as String).toDouble()
+                        //result.forEach{
+
+                        //}
+                        //for (item in results){
+
+//                        }
                         if (Version.update_check(version_num=version)) {
                             Version.create(version_num = version)
                             // TODO アップデート処理

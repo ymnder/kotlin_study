@@ -29,7 +29,7 @@ class TaskAddButton : View {
 
         searchButton.setOnClickListener {
             // データ自体は入るが、画面は更新されない。この機能自体が仮なので。
-            val new_article = Article.create(title = TaskText.text.toString())
+            val new_article = Article.create(title = TaskText.text.toString(),url = "https://hoge.com/",thumbnail = "https://hoge.com/wp-content/uploads/hoge-lumber-company.png",star = false)
         }
     }
 

@@ -10,9 +10,13 @@ import com.example.ginjake.kotlin_test.model.Article
 
 
 import android.support.v7.widget.Toolbar
+import android.text.Editable
 import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.example.ginjake.kotlin_test.client.UpdateClient
 import com.example.ginjake.kotlin_test.viewmodel.ArticleViewModel
 import com.example.ginjake.kotlin_test.view.part.DrawerMenu
@@ -21,6 +25,17 @@ import io.realm.Realm
 import io.realm.RealmConfiguration
 import com.facebook.stetho.Stetho
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
+import com.google.firebase.iid.FirebaseInstanceId
+import android.content.ClipDescription
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+
 
 //DB
 var mRealm : Realm? = null
@@ -39,10 +54,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val task_add_button: TaskAddButton by lazy{
         TaskAddButton(this)
     }
+
+    //コンテンツ書き換え部分
+    val layout:LinearLayout by lazy {
+        findViewById<View>(R.id.content_main) as LinearLayout
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //firebaseの設定
+        val mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseMessaging.getInstance().subscribeToTopic("kotori")
 
         /* debug用 */
         Stetho.initialize(
@@ -58,7 +82,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mRealm = Realm.getInstance(realmConfig)
 
         //アップデート確認
-        UpdateClient.get();
+        UpdateClient.getVersion();
 
         /* メニュー開閉ボタン*/
         var Toolbar:DrawerMenu = DrawerMenu()
@@ -81,7 +105,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_top -> {
-                val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout// 変更したいレイアウト
                 change_view(layout,R.layout.activity_list)
 
                 /* タスク追加ボタン */
@@ -101,24 +124,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 //テストデータを追加する
                 article_list.listAdapter.articles.add(
-                    Article.create(title="ことりん",url="https://www.google.co.jp/search?q=%E3%81%93%E3%81%A8%E3%82%8A%E3%82%93&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiQ1YTaofXYAhURhbwKHYwABZkQ_AUICigB&biw=2133&bih=1054")
+                    Article.create(
+                            title = "ことりん",
+                            url = "https://www.google.co.jp/search?q=%E3%81%93%E3%81%A8%E3%82%8A%E3%82%93&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiQ1YTaofXYAhURhbwKHYwABZkQ_AUICigB&biw=2133&bih=1054",
+                            thumbnail = "http://daybydaypg.com/wp-content/uploads/2017/10/f3759c4c-8e84-74f6-8a4e-b2ec82c7347b.png",
+                            star = false
+                    )
                 )
                 article_list.listAdapter.articles.add(
-                        Article.create(title="honoka",url="http://honokak.osaka/")
+                        Article.create(
+                                title = "honoka",
+                                url = "http://honokak.osaka/",
+                                thumbnail = "http://honokak.osaka/assets/img/honoka.png",
+                                star = false
+                        )
                 )
                 article_list.listAdapter.articles.add(
-                        Article.create(title="るびぃ",url="https://ja.wikipedia.org/wiki/Ruby_on_Rails")
+                        Article.create(
+                                title = "るびぃ",
+                                url = "https://ja.wikipedia.org/wiki/Ruby_on_Rails",
+                                thumbnail = "https://dyama.org/wp-content/uploads/2016/04/ruby.jpg",
+                                star = false
+                        )
                 )
 
                 article_list.listAdapter.notifyDataSetChanged()
                 drawer.closeDrawers();
             }
             R.id.nav_kotori -> {
-                val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout// 変更したいレイアウト
                 change_view(layout,R.layout.activity_sub)
             }
             R.id.nav_billed -> {
-                val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout// 変更したいレイアウト
                 change_view(layout,R.layout.activity_billed)
             }
         }
