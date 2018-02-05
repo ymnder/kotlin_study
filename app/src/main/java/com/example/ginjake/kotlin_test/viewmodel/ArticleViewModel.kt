@@ -34,7 +34,7 @@ class ArticleViewModel : RecyclerView {
         ArticleListAdapter(context)
     }
 
-    fun create_list_view(layout:LinearLayout){
+    fun create_list_view(layout:FrameLayout){
 
         val mLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         LayoutInflater.from(context).inflate(R.layout.activity_list, layout)

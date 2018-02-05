@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide
 import com.example.ginjake.kotlin_test.R
 import com.example.ginjake.kotlin_test.model.Article
 
-class ArticleSingleView(context: Context?, layout: LinearLayout, article: Article) : FrameLayout(context) {
+class ArticleSingleView(context: Context?, layout: FrameLayout, article: Article) : FrameLayout(context) {
 
 
 

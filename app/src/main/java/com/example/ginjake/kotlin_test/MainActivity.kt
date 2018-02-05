@@ -14,9 +14,6 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.example.ginjake.kotlin_test.client.UpdateClient
 import com.example.ginjake.kotlin_test.viewmodel.ArticleViewModel
 import com.example.ginjake.kotlin_test.view.part.DrawerMenu
@@ -30,7 +27,7 @@ import android.content.ClipDescription
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.widget.Toast
+import android.widget.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -56,8 +53,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     //コンテンツ書き換え部分
-    val layout:LinearLayout by lazy {
-        findViewById<View>(R.id.content_main) as LinearLayout
+    val layout:FrameLayout by lazy {
+        findViewById<View>(R.id.content_main) as FrameLayout
     }
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -94,7 +91,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationView.setNavigationItemSelectedListener(this)
 
         /* リストビュー*/
-        val layout:LinearLayout  = findViewById<View>(R.id.content_main) as LinearLayout
+        val layout: FrameLayout = findViewById<View>(R.id.content_main) as FrameLayout
         article_list.create_list_view(layout)
 
         /* タスク追加ボタン */
@@ -174,7 +171,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-    fun change_view(layout:LinearLayout,activity_name: Int){
+    fun change_view(layout:FrameLayout,activity_name: Int){
         layout.removeAllViews(); // レイアウトのビューをすべて削除する
         getLayoutInflater().inflate(activity_name, layout)
         drawer.closeDrawers(); //メニューを閉じる
