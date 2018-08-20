@@ -1,6 +1,5 @@
 package com.example.ginjake.kotlin_test.client
 
-import com.example.ginjake.kotlin_test.model.Article
 import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.core.FuelError
@@ -13,10 +12,15 @@ import org.json.JSONObject
 /**
  * Created by ginjake on 2018/01/29.
  */
-object UpdateClient {
+class UpdateClient {
+
+    companion object {
+        private const val VERSION = "http://www.ginjake.net/kotlinApi/version.php"
+        private const val CREATE_JSON = "http://www.ginjake.net/kotlinApi/create_json.php"
+    }
 
     fun getVersion(success: (version: Double) -> Unit, error: (error: Result<Json, FuelError>) -> Unit) {
-        "http://www.ginjake.net/kotlinApi/version.php".httpGet().responseJson { request, response, result ->
+        VERSION.httpGet().responseJson { request, response, result ->
             when (result) {
                 // ステータスコード 2xx
                 is Result.Success -> {
@@ -35,7 +39,7 @@ object UpdateClient {
     }
 
     fun getDataFromTestApi(success: (results: JSONArray) -> Unit, error: (error: Result<Json, FuelError>) -> Unit) {
-        "http://www.ginjake.net/kotlinApi/create_json.php".httpGet().responseJson { request, response, result ->
+        CREATE_JSON.httpGet().responseJson { request, response, result ->
             when (result) {
                 // ステータスコード 2xx
                 is Result.Success -> {
