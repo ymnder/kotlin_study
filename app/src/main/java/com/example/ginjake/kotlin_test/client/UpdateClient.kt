@@ -28,7 +28,7 @@ class UpdateClient()  {
                         val results =json.get("results") as JSONArray
                         val version:Double = ((results[0] as JSONObject)["version"] as String).toDouble()
 
-                        if (Version.update_check(version_num=version)) {
+                        if (Version.update_check(database = mRealm, version_num=version)) {
                             Version.create(version_num = version)
                             // TODO アップデート処理
                             Log.d("json", "アップデート")
