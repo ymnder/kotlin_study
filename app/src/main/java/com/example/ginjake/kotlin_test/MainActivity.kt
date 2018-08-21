@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.example.ginjake.kotlin_test.client.UpdateClient
 import com.example.ginjake.kotlin_test.model.Article
+import com.example.ginjake.kotlin_test.presenter.ArticlePresenter
 import com.example.ginjake.kotlin_test.view.part.DrawerMenu
 import com.example.ginjake.kotlin_test.view.part.TaskAddButton
 import com.example.ginjake.kotlin_test.viewmodel.ArticleViewModel
@@ -20,8 +21,7 @@ import io.realm.Realm
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    //DB
-    private val mRealm = Realm.getDefaultInstance()
+    private val presenter = ArticlePresenter()
 
     //左メニュー
     private val drawer: DrawerLayout by lazy {
@@ -45,9 +45,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //アップデート確認
-        UpdateClient.getVersion()
+        presenter.onCreate()
 
         /* メニュー開閉ボタン*/
         val toolbar: DrawerMenu = DrawerMenu()
@@ -81,7 +79,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_delete_all -> {
-                mRealm?.executeTransaction(Realm.Transaction { realm -> realm.deleteAll() })
+                presenter.deleteAll()
                 article_list.listAdapter.articles = arrayListOf()
                 article_list.listAdapter.notifyDataSetChanged()
                 drawer.closeDrawers();
