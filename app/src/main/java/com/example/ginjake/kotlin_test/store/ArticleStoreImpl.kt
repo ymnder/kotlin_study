@@ -8,7 +8,7 @@ import java.util.*
 class ArticleStoreImpl(
         private val realm: Realm
 ): ArticleStore{
-    override fun read(): RealmResults<Article> {
+    override fun getAllArticles(): RealmResults<Article> {
         return realm.where(Article::class.java).findAll()
     }
 

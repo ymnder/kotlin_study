@@ -16,12 +16,12 @@ import com.example.ginjake.kotlin_test.presenter.ArticlePresenter
 import com.example.ginjake.kotlin_test.view.part.DrawerMenu
 import com.example.ginjake.kotlin_test.view.part.TaskAddButton
 import com.example.ginjake.kotlin_test.viewmodel.ArticleViewModel
-import io.realm.Realm
+import io.realm.RealmResults
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ArticlePresenter.View {
 
-    private val presenter = ArticlePresenter()
+    private val presenter = ArticlePresenter(this)
 
     //左メニュー
     private val drawer: DrawerLayout by lazy {
@@ -85,35 +85,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 drawer.closeDrawers();
             }
             R.id.nav_test_data -> {
-
-                //テストデータを追加する
-                article_list.listAdapter.articles.add(
-                        Article.create(
-                                title = "ことりん",
-                                url = "https://www.google.co.jp/search?q=%E3%81%93%E3%81%A8%E3%82%8A%E3%82%93&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiQ1YTaofXYAhURhbwKHYwABZkQ_AUICigB&biw=2133&bih=1054",
-                                thumbnail = "http://daybydaypg.com/wp-content/uploads/2017/10/f3759c4c-8e84-74f6-8a4e-b2ec82c7347b.png",
-                                star = false
-                        )
-                )
-                article_list.listAdapter.articles.add(
-                        Article.create(
-                                title = "honoka",
-                                url = "http://honokak.osaka/",
-                                thumbnail = "http://honokak.osaka/assets/img/honoka.png",
-                                star = false
-                        )
-                )
-                article_list.listAdapter.articles.add(
-                        Article.create(
-                                title = "るびぃ",
-                                url = "https://ja.wikipedia.org/wiki/Ruby_on_Rails",
-                                thumbnail = "https://dyama.org/wp-content/uploads/2016/04/ruby.jpg",
-                                star = false
-                        )
-                )
-
-                article_list.listAdapter.notifyDataSetChanged()
-                drawer.closeDrawers();
+                presenter.getAll()
             }
             R.id.nav_kotori -> {
                 change_view(layout, R.layout.activity_sub)
@@ -155,6 +127,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onDestroy() {
         super.onDestroy()
         mRealm.close()
+    }
+
+    override fun updateArticles(articles: RealmResults<Article>) {
+        article_list.listAdapter.articles.addAll(articles)
+        article_list.listAdapter.notifyDataSetChanged()
+        drawer.closeDrawers()
     }
 }
 

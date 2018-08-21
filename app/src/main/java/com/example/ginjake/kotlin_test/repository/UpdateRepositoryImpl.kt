@@ -2,8 +2,10 @@ package com.example.ginjake.kotlin_test.repository
 
 import android.util.Log
 import com.example.ginjake.kotlin_test.client.UpdateClient
+import com.example.ginjake.kotlin_test.model.Article
 import com.example.ginjake.kotlin_test.store.ArticleStore
 import com.example.ginjake.kotlin_test.store.VersionStore
+import io.realm.RealmResults
 
 class UpdateRepositoryImpl(
         private val client: UpdateClient,
@@ -36,5 +38,13 @@ class UpdateRepositoryImpl(
         }, {
             // TODO エラー処理
         })
+    }
+
+    override fun createArticle(title: String, url: String, thumbnail: String, star: Boolean) {
+        articleStore.create(title, url, thumbnail, star)
+    }
+
+    override fun getAllArticles(): RealmResults<Article> {
+        return articleStore.getAllArticles()
     }
 }
