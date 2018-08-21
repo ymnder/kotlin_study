@@ -15,12 +15,7 @@ import com.example.ginjake.kotlin_test.model.Article
 import com.example.ginjake.kotlin_test.view.part.DrawerMenu
 import com.example.ginjake.kotlin_test.view.part.TaskAddButton
 import com.example.ginjake.kotlin_test.viewmodel.ArticleViewModel
-import com.facebook.stetho.Stetho
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.messaging.FirebaseMessaging
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider
 import io.realm.Realm
-import io.realm.RealmConfiguration
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

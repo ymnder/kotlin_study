@@ -2,11 +2,8 @@ package com.example.ginjake.kotlin_test.repository
 
 import android.util.Log
 import com.example.ginjake.kotlin_test.client.UpdateClient
-import com.example.ginjake.kotlin_test.model.Article
-import com.example.ginjake.kotlin_test.model.Version
 import com.example.ginjake.kotlin_test.store.ArticleStore
 import com.example.ginjake.kotlin_test.store.VersionStore
-import io.realm.Realm
 
 class UpdateRepositoryImpl(
         private val client: UpdateClient,

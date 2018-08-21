@@ -8,14 +8,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.Toast
 import com.example.ginjake.kotlin_test.ArticleListAdapter
 import com.example.ginjake.kotlin_test.R
 import com.example.ginjake.kotlin_test.model.Article
-import android.widget.Toast
 import com.example.ginjake.kotlin_test.view.ArticleSingleView
 
 
@@ -34,7 +33,7 @@ class ArticleViewModel : RecyclerView {
         ArticleListAdapter(context)
     }
 
-    fun create_list_view(layout:FrameLayout){
+    fun create_list_view(layout: FrameLayout) {
 
         val mLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         LayoutInflater.from(context).inflate(R.layout.activity_list, layout)
@@ -52,7 +51,7 @@ class ArticleViewModel : RecyclerView {
                     url = it.url,
                     thumbnail = it.thumbnail,
                     star = it.star
-                    ))
+            ))
         }
 
         //アダプターをViewに適用
@@ -95,12 +94,11 @@ class ArticleViewModel : RecyclerView {
         })
 
         //タップの判定と処理
-        listAdapter.touchViewAction = {
-            context:Context,event:MotionEvent,article:Article ->
+        listAdapter.touchViewAction = { context: Context, event: MotionEvent, article: Article ->
             if (event.action == MotionEvent.ACTION_UP) {
-                if(event.eventTime - event.downTime < getResources().getInteger(R.integer.longTapTime) ) { //ロングタップと判定し、タップアクションを行いたくない場合がある
+                if (event.eventTime - event.downTime < getResources().getInteger(R.integer.longTapTime)) { //ロングタップと判定し、タップアクションを行いたくない場合がある
                     Toast.makeText(context, "タップ", Toast.LENGTH_LONG).show()
-                    ArticleSingleView(context,layout,article)
+                    ArticleSingleView(context, layout, article)
                 }
             }
         }
