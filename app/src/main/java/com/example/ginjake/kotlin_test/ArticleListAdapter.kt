@@ -4,8 +4,7 @@ package com.example.ginjake.kotlin_test
  * Created by ginjake on 2018/01/19.
  */
 import android.content.Context
-import android.support.v7.widget.RecyclerView
-import android.util.Log
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.example.ginjake.kotlin_test.model.Article

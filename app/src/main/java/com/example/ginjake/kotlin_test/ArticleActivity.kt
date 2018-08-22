@@ -6,7 +6,7 @@ package com.example.ginjake.kotlin_test
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.webkit.WebView
 import com.example.ginjake.kotlin_test.model.Article
 import com.example.ginjake.kotlin_test.view.ArticleView

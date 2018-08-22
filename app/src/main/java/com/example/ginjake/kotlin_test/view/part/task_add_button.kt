@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.example.ginjake.kotlin_test.R
-import com.example.ginjake.kotlin_test.model.Article
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class TaskAddButton : View {
@@ -21,7 +21,7 @@ class TaskAddButton : View {
 
     fun create_task_add_button(layout: FrameLayout){
         LayoutInflater.from(context).inflate(R.layout.task_add_button, layout)
-        val taskAddFloatingButton: android.support.design.widget.FloatingActionButton = layout.findViewById(R.id.task_add_floating_button)
+        val taskAddFloatingButton: FloatingActionButton = layout.findViewById(R.id.task_add_floating_button)
 
         taskAddFloatingButton.setOnClickListener {
             Toast.makeText(context, "なんかのアクション", Toast.LENGTH_LONG).show()

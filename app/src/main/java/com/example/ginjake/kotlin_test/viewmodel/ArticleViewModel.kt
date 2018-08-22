@@ -4,9 +4,9 @@ package com.example.ginjake.kotlin_test.viewmodel
  * Created by ginjake on 2018/01/19.
  */
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
